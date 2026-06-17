@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Generador de QR - Drive</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 40px auto; text-align: center; }
+    input, button { padding: 10px; font-size: 16px; width: 100%; box-sizing: border-box; margin: 5px 0; }
+    #qr { margin: 20px auto; display: inline-block; }
+    button { background: #4285F4; color: white; border: none; border-radius: 6px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>Generador de QR 📲</h2>
+  
+  <input type="text" id="entrada" placeholder="Pega aquí el enlace de la carpeta de Drive">
+  <button onclick="generar()">Generar QR</button>
+
+  <div id="qr"></div>
+  <button id="descargar" onclick="descargar()" style="display:none;">Descargar QR</button>
+
+  <!-- Librería para generar QR -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <script>
+    let qrcode = null;
+
+    function generar() {
+      const valor = document.getElementById('entrada').value.trim();
+      const contenedor = document.getElementById('qr');
+
+      if (!valor) {
+        alert('Pega un enlace primero');
+        return;
+      }
+
+      contenedor.innerHTML = ''; // limpiar QR anterior
+
+      qrcode = new QRCode(contenedor, {
+        text: valor,
+        width: 256,
+        height: 256,
+        colorDark: "#000000",
+        colorLight: "#ffffff"
+      });
+
+      document.getElementById('descargar').style.display = 'block';
+    }
+
+    function descargar() {
+      const img = document.querySelector('#qr img') || document.querySelector('#qr canvas');
+      let url;
+
+      if (img.tagName === 'CANVAS') {
+        url = img.toDataURL('image/png');
+      } else {
+        url = img.src;
+      }
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'qr-drive.png';
+      a.click();
+    }
+  </script>
+</body>
+</html>
